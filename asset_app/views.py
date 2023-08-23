@@ -13,6 +13,14 @@ class CompanyList(generics.ListCreateAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 
+    def perform_create(self, serializer):
+        if self.request.user.is_authenticated:
+            serializer.save(created_by=self.request.user, updated_by=self.request.user)
+
+    def perform_update(self, serializer):
+        if self.request.user.is_authenticated:
+            serializer.save(updated_by=self.request.user)
+
     
 class CompanyDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Company.objects.all()
@@ -21,6 +29,12 @@ class CompanyDetail(generics.RetrieveUpdateDestroyAPIView):
 class CompanyEmployeeList(generics.ListCreateAPIView):
     queryset = CompanyEmployee.objects.all()
     serializer_class = CompanyEmployeeSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
 
 
 class CompanyEmployeeDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -32,6 +46,12 @@ class AssetList(generics.ListCreateAPIView):
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
+
 class AssetDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer
@@ -40,6 +60,12 @@ class AssetDetail(generics.RetrieveUpdateDestroyAPIView):
 class DelegationList(generics.ListCreateAPIView):
     queryset = Delegation.objects.all()
     serializer_class = DelegationSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
 
 class DelegationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Delegation.objects.all()
