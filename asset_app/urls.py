@@ -4,6 +4,7 @@ from asset_app import views
 
 
 urlpatterns = [
+    path('', views.home, name="home"),
     path('company/', views.CompanyList.as_view()),
     path('company/<int:pk>/', views.CompanyDetail.as_view()),
 

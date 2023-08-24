@@ -2,11 +2,24 @@ from django.shortcuts import render
 from asset_app.models import Company, CompanyEmployee, Asset, Delegation
 from asset_app.serializers import CompanySerializer,CompanyEmployeeSerializer,DelegationSerializer,AssetSerializer
 from rest_framework import generics
+from django.db.models import Q
 
 
 # Create your views here.
 def home(request):
-    return render(request, 'asset_app/home.html')
+    deligations = Delegation.objects.all()
+    assets = Asset.objects.all()
+
+    total_deligations = deligations.count()
+
+    # q = request.GET.get('q')
+    # company = Company.objects.filter(Q(name__icontains=q))
+    context = {
+        'deligations': deligations,
+        'total_deligations':total_deligations,
+        'assets':assets,
+    }
+    return render(request, 'asset_app/home.html', context)
 
 
 class CompanyList(generics.ListCreateAPIView):
@@ -14,12 +27,10 @@ class CompanyList(generics.ListCreateAPIView):
     serializer_class = CompanySerializer
 
     def perform_create(self, serializer):
-        if self.request.user.is_authenticated:
-            serializer.save(created_by=self.request.user, updated_by=self.request.user)
+        serializer.save(created_by=self.request.user)
 
     def perform_update(self, serializer):
-        if self.request.user.is_authenticated:
-            serializer.save(updated_by=self.request.user)
+        serializer.save(updated_by=self.request.user)
 
     
 class CompanyDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -31,7 +42,7 @@ class CompanyEmployeeList(generics.ListCreateAPIView):
     serializer_class = CompanyEmployeeSerializer
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+        serializer.save(created_by=self.request.user)
 
     def perform_update(self, serializer):
         serializer.save(updated_by=self.request.user)
@@ -47,7 +58,7 @@ class AssetList(generics.ListCreateAPIView):
     serializer_class = AssetSerializer
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+        serializer.save(created_by=self.request.user)
 
     def perform_update(self, serializer):
         serializer.save(updated_by=self.request.user)
@@ -62,7 +73,7 @@ class DelegationList(generics.ListCreateAPIView):
     serializer_class = DelegationSerializer
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+        serializer.save(created_by=self.request.user)
 
     def perform_update(self, serializer):
         serializer.save(updated_by=self.request.user)
