@@ -3,6 +3,7 @@ from asset_app.models import Company, CompanyEmployee, Asset, Delegation
 from asset_app.serializers import CompanySerializer,CompanyEmployeeSerializer,DelegationSerializer,AssetSerializer
 from rest_framework import generics
 from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q
 
 
@@ -66,6 +67,10 @@ class AssetList(generics.ListCreateAPIView):
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer
 
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('name',)
+    # filterset_class = 
+
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
@@ -80,6 +85,9 @@ class AssetDetail(generics.RetrieveUpdateDestroyAPIView):
 class DelegationList(generics.ListCreateAPIView):
     queryset = Delegation.objects.all()
     serializer_class = DelegationSerializer
+
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('asset__name', 'assigned_to__user__username',)
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
