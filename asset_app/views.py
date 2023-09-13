@@ -2,6 +2,7 @@ from django.shortcuts import render
 from asset_app.models import Company, CompanyEmployee, Asset, Delegation
 from asset_app.serializers import CompanySerializer,CompanyEmployeeSerializer,DelegationSerializer,AssetSerializer
 from rest_framework import generics
+from rest_framework.filters import SearchFilter, OrderingFilter
 from django.db.models import Q
 
 
@@ -26,6 +27,11 @@ class CompanyList(generics.ListCreateAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 
+    filter_backends = (SearchFilter,OrderingFilter)
+    search_fields = ('name','address')
+
+
+
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
@@ -40,6 +46,9 @@ class CompanyDetail(generics.RetrieveUpdateDestroyAPIView):
 class CompanyEmployeeList(generics.ListCreateAPIView):
     queryset = CompanyEmployee.objects.all()
     serializer_class = CompanyEmployeeSerializer
+
+    filter_backends = (SearchFilter,OrderingFilter)
+    search_fields = ('first_name','last_name', 'company__name','user__username')
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)

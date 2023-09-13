@@ -10,6 +10,13 @@ admin.site.register(Delegation, DelegationAdmin)
 
 class AssetAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'company', 'created_by', 'created_at', 'updated_by', 'updated_at')
+    search_fields = ('name','company__name',)
+    readonly_fields = ('created_by', 'created_at', 'updated_by', 'updated_at')
+
+    filter_horizontal = ()
+    # filter_vertical = ()
+    list_filter = ()
+    fieldsets = ()
 
 admin.site.register(Asset, AssetAdmin)
 
