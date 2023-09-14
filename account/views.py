@@ -44,5 +44,10 @@ def Login(request):
 
 def Logout(request):
     logout(request)
-    return redirect('login')
+    return render(request, 'account/logout.html')
+    # return redirect('login')
+
+
+
+
 
